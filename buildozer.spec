@@ -1,5 +1,5 @@
 [app]
-# Название и имя пакета
+# Название и пакет
 title = Followed
 package.name = followed
 package.domain = org.test
@@ -8,38 +8,28 @@ package.domain = org.test
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 
-# Версия приложения
+# Версия
 version = 0.1
 
-# Зависимости
+# Требования
 requirements = python3,kivy
 
-# Иконка (если есть)
-icon.filename = %(source.dir)s/icon.png
-
-# Ориентация экрана
+# Экран
 orientation = portrait
-
-# --- НАСТРОЙКИ ANDROID (от Android 7.0 до 16) ---
 fullscreen = 0
 
-# Поддержка от Android 7.0 (API 24)
+# Версии Android (Поддержка от Android 7.0 до Android 16)
 android.minapi = 24
-
-# Целевая версия (Target API level)
-android.api = 35
-
-# Версия инструментов сборки NDK / SDK
+android.api = 34
 android.sdk_build_tools_version = 34.0.0
-android.ndk_api = 24
+android.ndk = 25b
 
-# Разрешать лицензии автоматически
+# Авто-принятие лицензий
 android.accept_sdk_licence = True
 
-# Архитектуры процессоров (поддержка большинства смартфонов)
+# Архитектуры
 android.archs = arm64-v8a, armeabi-v7a
 
 [buildozer]
-# Уровень логирования
 log_level = 2
 warn_on_root = 1
