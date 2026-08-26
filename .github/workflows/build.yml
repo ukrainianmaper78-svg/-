@@ -35,6 +35,12 @@ jobs:
         sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev zip unzip autoconf libtool pkg-config libssl-dev
         pip install --upgrade buildozer cython
 
+    - name: Accept All Android Licenses
+      run: |
+        mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
+        echo -e "\n89330d1777459b947029b0e29d34864b12573713\n4594570560150deb501639d305d4f21cd6a52a98\n84831b9409646a918e30573bab4c9c91346d8abd" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+        echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
+
     - name: Build with Buildozer
       run: |
         buildozer android debug --accept-sdk-licenses
