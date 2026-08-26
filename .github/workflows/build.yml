@@ -12,41 +12,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Build with Buildozer Action
+      uses: ArtemShedov/buildozer-action@v1.2
       with:
-        python-version: '3.10'
-
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-
-    - name: Free Disk Space
-      run: |
-        sudo rm -rf /usr/share/dotnet
-        sudo rm -rf /usr/local/lib/android
-        sudo rm -rf /opt/ghc
-
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev zip unzip autoconf libtool pkg-config libssl-dev
-        pip install --upgrade buildozer cython
-
-    - name: Download SDK Command-Line Tools
-      run: |
-        mkdir -p ~/.buildozer/android/platform/android-sdk/tools/bin
-        wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O sdk-tools.zip
-        unzip -q sdk-tools.zip -d ~/.buildozer/android/platform/android-sdk/
-        mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
-        mv ~/.buildozer/android/platform/android-sdk/cmdline-tools/* ~/.buildozer/android/platform/android-sdk/tools/ 2>/dev/null || true
-        cp -r ~/.buildozer/android/platform/android-sdk/tools/* ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/ 2>/dev/null || true
-
-    - name: Build with Buildozer
-      run: |
-        yes | buildozer android debug
+        command: buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
