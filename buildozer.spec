@@ -12,7 +12,10 @@ source.include_exts = py,png,jpg,kv,atlas
 version = 0.1
 
 # Требования
-requirements = python3,kivy
+# Версия python3 зафиксирована явно: без этого p4a по умолчанию
+# собирает ещё нестабильный Python 3.14, чей встроенный pip ломается
+# при создании служебного venv (ImportError в pip._internal).
+requirements = python3==3.11.9,kivy
 
 # Экран
 orientation = portrait
