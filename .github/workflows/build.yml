@@ -35,6 +35,18 @@ jobs:
         sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev zip unzip autoconf libtool pkg-config libssl-dev
         pip install --upgrade "buildozer==1.5.0" cython
 
+    - name: Pin a known-good pip version
+      # python-for-android сам делает "pip install -U pip" внутри своего
+      # служебного venv, без возможности это отключить из buildozer.spec.
+      # Если в этот момент на PyPI оказывается битый релиз pip (в этом
+      # случае — с рассинхроном между cli/main_parser.py и cli/spinners.py,
+      # ImportError: cannot import name 'open_rich_spinner'), сборка падает.
+      # Жёстко ограничиваем через PIP_CONSTRAINT, какую версию pip разрешено
+      # ставить где угодно в этом job — p4a обязан будет использовать её.
+      run: |
+        echo "pip==24.3.1" > "$HOME/pip-constraints.txt"
+        echo "PIP_CONSTRAINT=$HOME/pip-constraints.txt" >> "$GITHUB_ENV"
+
     - name: Setup Android SDK Tools & Licenses
       run: |
         mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
