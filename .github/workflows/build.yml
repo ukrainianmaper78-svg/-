@@ -33,7 +33,22 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev zip unzip autoconf libtool pkg-config libssl-dev
-        pip install --upgrade buildozer cython
+        pip install --upgrade "buildozer==1.5.0" cython
+
+    - name: Remove stray/unstable system Python versions
+      # На образе ubuntu-22.04 иногда предустановлен ещё не до конца
+      # стабильный python3.14, из-за которого python-for-android создаёт
+      # свой служебный venv именно на нём и падает с ImportError внутри pip._internal.
+      # Buildozer сам ищет "самый новый доступный python3" на PATH,
+      # поэтому убираем всё, что новее нужного нам 3.10.
+      run: |
+        for v in 3.11 3.12 3.13 3.14 3.15; do
+          sudo apt-get purge -y "python$v" "python$v-minimal" "python$v-venv" 2>/dev/null || true
+          sudo rm -f "/usr/bin/python$v" "/usr/local/bin/python$v" 2>/dev/null || true
+        done
+        echo "Available python3 interpreters:"
+        ls -la /usr/bin/python3* /usr/local/bin/python3* 2>/dev/null || true
+        python3 --version
 
     - name: Setup Android SDK Tools & Licenses
       run: |
