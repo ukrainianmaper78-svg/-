@@ -35,29 +35,6 @@ jobs:
         sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev zip unzip autoconf libtool pkg-config libssl-dev
         pip install --upgrade "buildozer==1.5.0" cython
 
-    - name: Remove stray/unstable Python versions (apt + hostedtoolcache)
-      # На образе ubuntu-22.04 в /opt/hostedtoolcache/Python/ иногда лежит
-      # ещё не до конца стабильный python3.14 (даже если мы просим 3.10
-      # через actions/setup-python — он просто заранее закеширован в образе).
-      # python-for-android создаёт свой служебный venv через пакет
-      # `virtualenv`, а тот сам сканирует /opt/hostedtoolcache и берёт
-      # "самый новый" python, из-за чего попадает на битый 3.14 и падает
-      # с ImportError внутри pip._internal. Поэтому вычищаем кэш и жёстко
-      # фиксируем интерпретатор через VIRTUALENV_PYTHON.
-      run: |
-        for v in 3.11 3.12 3.13 3.14 3.15; do
-          sudo apt-get purge -y "python$v" "python$v-minimal" "python$v-venv" 2>/dev/null || true
-          sudo rm -f "/usr/bin/python$v" "/usr/local/bin/python$v" 2>/dev/null || true
-        done
-        sudo rm -rf /opt/hostedtoolcache/Python/3.11* /opt/hostedtoolcache/Python/3.12* /opt/hostedtoolcache/Python/3.13* /opt/hostedtoolcache/Python/3.14* /opt/hostedtoolcache/Python/3.15* 2>/dev/null || true
-
-        echo "Остались только эти версии в hostedtoolcache:"
-        ls /opt/hostedtoolcache/Python/ 2>/dev/null || true
-
-        PY310="$(which python3)"
-        echo "python3 -> $PY310 ($($PY310 --version))"
-        echo "VIRTUALENV_PYTHON=$PY310" >> "$GITHUB_ENV"
-
     - name: Setup Android SDK Tools & Licenses
       run: |
         mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
